@@ -1,8 +1,8 @@
 'use server';
 
 import { db } from './index';
-import { eq } from 'drizzle-orm';
-import { trackedMonthsTable } from "./schema";
+import { eq, and } from 'drizzle-orm';
+import { trackedMonthsTable, transactionsTable } from "./schema";
 
 export async function getMonthsForSelectedYear(year: number) {
     const months = await db.select().from(trackedMonthsTable).where(eq(trackedMonthsTable.year, year)).execute();
@@ -10,9 +10,27 @@ export async function getMonthsForSelectedYear(year: number) {
 }
 
 export async function createMonth(month: string, year: number) {
-    const monthFromDB = await db.insert(trackedMonthsTable).values({
+    const [monthFromDB] = await db.insert(trackedMonthsTable).values({
         year: year,
         month: month,
-    });
-    return monthFromDB;
+    }).returning({id: trackedMonthsTable.id});
+    return monthFromDB?.id;
+}
+
+export async function getTransactionsForSelectedMonthAndYear(month: string, year: number) {
+    const trackedMonthIDs = await db
+        .select({ id: trackedMonthsTable.id })
+        .from(trackedMonthsTable)
+        .where(and(eq(trackedMonthsTable.month, month), eq(trackedMonthsTable.year, year)))
+        .limit(1)
+        .execute();
+
+    const id = trackedMonthIDs.length > 0 ? trackedMonthIDs[0].id : (await createMonth(month, year));
+
+    const transactions = await db
+        .select({id: transactionsTable.id, transactionType: transactionsTable.transactionType, amount: transactionsTable.amount})
+        .from(transactionsTable)
+        .where(eq(transactionsTable.trackedMonthId, id));
+
+    return transactions;
 }
