@@ -28,7 +28,7 @@ export function TransactionsList({ selectedMonth }: TransactionsListProps) {
 
     return (
         <div>
-            <h2>{selectedMonth} {date.getFullYear()}</h2>
+            <h1 className={'font-bold text-lg'}>{selectedMonth} {date.getFullYear()}</h1>
             <ul>
                 {transactions.map((tx, index) => (
                     <li key={index}>{JSON.stringify(tx)}</li>
