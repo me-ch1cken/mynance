@@ -1,9 +1,28 @@
+'use client';
+import { useState } from "react";
 import { TimelineItem } from "./timeline-item";
 
-export function Timeline() {
+interface TrackedMonth {
+    id: string;
+    year: number;
+    month: string;
+    completed: boolean;
+}
 
-    const months: string[] = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
+interface TimelineProps {
+    months: string[];
+    trackedMonths: TrackedMonth[];
+}
+
+export function Timeline({months, trackedMonths}: TimelineProps) {
+
     const date = new Date();
+    const [selectedMonth, setSelectedMonth] = useState(months[date.getMonth()]);
+
+    const handleSelectedMonthChange = (month: string) => {
+        setSelectedMonth(month);
+        localStorage.setItem('selectedMonth', month);
+    }
 
     return (
         <>
@@ -11,7 +30,8 @@ export function Timeline() {
             <ul className="timeline timeline-compact timeline-vertical mx-8">
                 {
                     months.slice(0, date.getMonth() + 1).map((month) => {
-                        return <TimelineItem key={month} month={month} finalMonth={months[date.getMonth()]} />
+                        const monthFromDB = trackedMonths.find(t => t.month === month);
+                        return <TimelineItem key={month} month={month} completed={monthFromDB?.completed!} isSelected={month == selectedMonth} setSelectedMonth={handleSelectedMonthChange} finalMonth={months[date.getMonth()]} />
                     })
                 }
             </ul>
