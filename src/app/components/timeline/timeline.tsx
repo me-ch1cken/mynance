@@ -12,17 +12,13 @@ interface TrackedMonth {
 interface TimelineProps {
     months: string[];
     trackedMonths: TrackedMonth[];
+    selectedMonth: string;
+    setSelectedMonth: (month: string) => void;
 }
 
-export function Timeline({months, trackedMonths}: TimelineProps) {
+export function Timeline({months, trackedMonths, selectedMonth, setSelectedMonth}: TimelineProps) {
 
     const date = new Date();
-    const [selectedMonth, setSelectedMonth] = useState(months[date.getMonth()]);
-
-    const handleSelectedMonthChange = (month: string) => {
-        setSelectedMonth(month);
-        localStorage.setItem('selectedMonth', month);
-    }
 
     return (
         <>
@@ -31,7 +27,7 @@ export function Timeline({months, trackedMonths}: TimelineProps) {
                 {
                     months.slice(0, date.getMonth() + 1).map((month) => {
                         const monthFromDB = trackedMonths.find(t => t.month === month);
-                        return <TimelineItem key={month} month={month} completed={monthFromDB?.completed!} isSelected={month == selectedMonth} setSelectedMonth={handleSelectedMonthChange} finalMonth={months[date.getMonth()]} />
+                        return <TimelineItem key={month} month={month} completed={monthFromDB?.completed!} isSelected={month == selectedMonth} setSelectedMonth={setSelectedMonth} finalMonth={months[date.getMonth()]} />
                     })
                 }
             </ul>
