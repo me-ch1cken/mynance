@@ -5,6 +5,9 @@ import { getCategories, getTransactionsForSelectedMonthAndYear } from "@/db/acti
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { SelectLabel } from "@radix-ui/react-select";
 import { TransactionsList } from "./transactions-list";
+import { Button } from "@/app/components/ui/button";
+import { Plus } from "lucide-react";
+import { AddTransactionDialog } from "./transactions-add-dialog";
 
 interface TransactionsProps {
     selectedMonth: string;
@@ -85,6 +88,9 @@ export function Transactions({ selectedMonth }: TransactionsProps) {
                             {categories.map(category => <SelectItem key={category.id} value={category.id}>{category.name}</SelectItem>)}
                         </SelectContent>
                     </Select>
+                </li>
+                <li>
+                    <AddTransactionDialog categories={categories} />
                 </li>
             </ul>
             <TransactionsList transactions={filteredTransactions}/>
