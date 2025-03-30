@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { useEffect, useState } from "react";
+import { addTransaction } from "@/db/actions";
 
 interface Category {
     id: string;
@@ -13,13 +14,16 @@ interface Category {
 }
 
 interface AddTransactionDialogProps {
+    selectedMonth: string;
+    selectedYear: number;
     categories: Category[];
 }
 
-export function AddTransactionDialog({categories}: AddTransactionDialogProps) {
+export function AddTransactionDialog({categories, selectedMonth, selectedYear}: AddTransactionDialogProps) {
 
     const [selectedCategory, setSelectedCategory] = useState<string>('');
     const [selectedType, setSelectedType] = useState<string>('NEGATIVE');
+    const [amount, setAmount] = useState<number>(0);
 
     useEffect(() => {
         setSelectedCategory(categories[0]?.id);
@@ -37,7 +41,7 @@ export function AddTransactionDialog({categories}: AddTransactionDialogProps) {
                         Voeg een of meerdere transacties toe, dit dialoogvenster blijft open.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="flex flex-col space-y-4">
+                <form onSubmit={() => addTransaction(selectedMonth, selectedYear, selectedCategory, selectedType, amount)} className="flex flex-col space-y-4">
                     {/* Eerste Select met 100% breedte */}
                     <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                         <SelectTrigger className="w-full">
@@ -64,12 +68,18 @@ export function AddTransactionDialog({categories}: AddTransactionDialogProps) {
                             </SelectContent>
                         </Select>
                         
-                        <Input type="number" placeholder="Bedrag" className="w-[80%]" />
+                        <Input 
+                            type="number" 
+                            placeholder="Bedrag" 
+                            className="w-[80%]" 
+                            value={amount} 
+                            onChange={(e) => setAmount(parseFloat(e.target.value) || 0)} 
+                        />
                     </div>
-                </div>
-                <DialogFooter>
-                    <Button type="submit" variant={'add'}>Voeg transactie toe</Button>
-                </DialogFooter>
+                    <DialogFooter>
+                        <Button type="submit" variant={'add'}>Voeg transactie toe</Button>
+                    </DialogFooter>
+                </form>
             </DialogContent>
         </Dialog>
     );

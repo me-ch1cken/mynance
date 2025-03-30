@@ -89,7 +89,7 @@ export function Transactions({ selectedMonth, selectedYear, months }: Transactio
                     </Select>
                 </li>
                 <li>
-                    { date.getMonth() === months.indexOf(selectedMonth) && date.getFullYear() === selectedYear ? <AddTransactionDialog categories={categories} /> : null }
+                    { date.getMonth() === months.indexOf(selectedMonth) && date.getFullYear() === selectedYear ? <AddTransactionDialog categories={categories} selectedMonth={selectedMonth} selectedYear={selectedYear} /> : null }
                 </li>
             </ul>
             <TransactionsList transactions={filteredTransactions}/>

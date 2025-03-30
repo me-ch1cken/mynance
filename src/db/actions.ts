@@ -3,6 +3,7 @@
 import { db } from './index';
 import { eq, and, asc, desc } from 'drizzle-orm';
 import { categoriesTable, trackedMonthsTable, transactionsTable } from "./schema";
+import { revalidateTag } from 'next/cache';
 
 export async function getMonthsForSelectedYear(year: number) {
     const months = await db.select().from(trackedMonthsTable).where(eq(trackedMonthsTable.year, year)).execute();
@@ -44,6 +45,24 @@ export async function getTransactionsForSelectedMonthAndYear(month: string, year
 
 
     return transactions;
+}
+
+export async function addTransaction(month: string, year: number, category: string, type: string, amount: number) {
+    const trackedMonthIDs = await db
+        .select({ id: trackedMonthsTable.id })
+        .from(trackedMonthsTable)
+        .where(and(eq(trackedMonthsTable.month, month), eq(trackedMonthsTable.year, year)))
+        .limit(1)
+        .execute();
+
+    const id = trackedMonthIDs.length > 0 ? trackedMonthIDs[0].id : (await createMonth(month, year));
+
+    await db.insert(transactionsTable).values({
+        trackedMonthId: id,
+        transactionType: type,
+        category: category,
+        amount: amount.toString(),
+    });
 }
 
 export async function getCategories() {
