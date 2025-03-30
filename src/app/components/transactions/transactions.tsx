@@ -2,15 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { getCategories, getTransactionsForSelectedMonthAndYear } from "@/db/actions";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { SelectLabel } from "@radix-ui/react-select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { TransactionsList } from "./transactions-list";
-import { Button } from "@/app/components/ui/button";
-import { Plus } from "lucide-react";
 import { AddTransactionDialog } from "./transactions-add-dialog";
 
 interface TransactionsProps {
     selectedMonth: string;
+    selectedYear: number;
+    months: string[];
 }
 
 interface Transaction {
@@ -26,7 +25,7 @@ interface Category {
     name: string;
 }
 
-export function Transactions({ selectedMonth }: TransactionsProps) {
+export function Transactions({ selectedMonth, selectedYear, months }: TransactionsProps) {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
 
@@ -90,7 +89,7 @@ export function Transactions({ selectedMonth }: TransactionsProps) {
                     </Select>
                 </li>
                 <li>
-                    <AddTransactionDialog categories={categories} />
+                    { date.getMonth() === months.indexOf(selectedMonth) && date.getFullYear() === selectedYear ? <AddTransactionDialog categories={categories} /> : null }
                 </li>
             </ul>
             <TransactionsList transactions={filteredTransactions}/>

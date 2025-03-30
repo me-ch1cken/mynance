@@ -26,7 +26,7 @@ export function LandingPageComponent({months, trackedMonths}: LandingPageProps) 
                 <Timeline months={months} trackedMonths={trackedMonths} selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
             </div>
             <div className="w-4/5 p-4">
-                <Transactions selectedMonth={selectedMonth} />
+                <Transactions selectedMonth={selectedMonth} selectedYear={date.getFullYear()} months={months} />
             </div>
         </div>
     );
