@@ -34,6 +34,18 @@ export function Transactions({ selectedMonth, selectedYear, months }: Transactio
     const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
     const date = new Date();
 
+    const addTransaction = (transaction: Transaction) => {
+
+        const sortedTransactions = [...transactions, transaction].sort((a, b) => {
+            if (a.transactionType !== b.transactionType) {
+                return a.transactionType < b.transactionType ? 1 : -1;
+            }
+            return b.amount - a.amount;
+        });
+        setTransactions(sortedTransactions);
+
+    }
+
     useEffect(() => {
         async function fetchData() {
             const transactions: Transaction[] = await getTransactionsForSelectedMonthAndYear(selectedMonth, date.getFullYear());
@@ -50,7 +62,7 @@ export function Transactions({ selectedMonth, selectedYear, months }: Transactio
 
         setFilteredTransactions(transactions.filter((tx) => (tx.transactionType === selectedTransactionType || selectedTransactionType === 'ALL') && (selectedCategory === 'ALL' || tx.categoryId === selectedCategory)));
 
-    }, [selectedTransactionType, selectedCategory]);
+    }, [transactions, selectedTransactionType, selectedCategory]);
 
     useEffect(() => {
         async function fetchData() {
@@ -89,7 +101,7 @@ export function Transactions({ selectedMonth, selectedYear, months }: Transactio
                     </Select>
                 </li>
                 <li>
-                    { date.getMonth() === months.indexOf(selectedMonth) && date.getFullYear() === selectedYear ? <AddTransactionDialog categories={categories} selectedMonth={selectedMonth} selectedYear={selectedYear} /> : null }
+                    { date.getMonth() === months.indexOf(selectedMonth) && date.getFullYear() === selectedYear ? <AddTransactionDialog categories={categories} selectedMonth={selectedMonth} selectedYear={selectedYear} addTransactionToList={addTransaction} /> : null }
                 </li>
             </ul>
             <TransactionsList transactions={filteredTransactions}/>

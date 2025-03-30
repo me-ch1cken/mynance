@@ -3,7 +3,7 @@
 import { db } from './index';
 import { eq, and, asc, desc } from 'drizzle-orm';
 import { categoriesTable, trackedMonthsTable, transactionsTable } from "./schema";
-import { revalidateTag } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 export async function getMonthsForSelectedYear(year: number) {
     const months = await db.select().from(trackedMonthsTable).where(eq(trackedMonthsTable.year, year)).execute();
@@ -40,11 +40,34 @@ export async function getTransactionsForSelectedMonthAndYear(month: string, year
         .innerJoin(categoriesTable, eq(transactionsTable.category, categoriesTable.id))
         .where(eq(transactionsTable.trackedMonthId, id))
         .orderBy(desc(transactionsTable.transactionType))
-      ).map(tx => ({ ...tx, amount: Number(tx.amount) }));
+    ).map(tx => ({ ...tx, amount: Number(tx.amount) }));
+
+    const sortedTransactions = transactions.sort((a, b) => {
+        if (a.transactionType !== b.transactionType) {
+            return a.transactionType < b.transactionType ? 1 : -1;
+        }
+        return b.amount - a.amount;
+    });
       
+    return sortedTransactions;
+}
 
+export async function getTransactionById(transactionId: string) {
+    const [transaction] = (await db
+        .select({
+            id: transactionsTable.id,
+            transactionType: transactionsTable.transactionType,
+            amount: transactionsTable.amount,
+            categoryId: transactionsTable.category,
+            categoryName: categoriesTable.name,
+        })
+        .from(transactionsTable)
+        .innerJoin(categoriesTable, eq(transactionsTable.category, categoriesTable.id))
+        .where(eq(transactionsTable.id, transactionId))
+        .limit(1)
+        .execute()).map(tx => ({ ...tx, amount: Number(tx.amount) }));
 
-    return transactions;
+    return transaction;
 }
 
 export async function addTransaction(month: string, year: number, category: string, type: string, amount: number) {
@@ -57,12 +80,17 @@ export async function addTransaction(month: string, year: number, category: stri
 
     const id = trackedMonthIDs.length > 0 ? trackedMonthIDs[0].id : (await createMonth(month, year));
 
-    await db.insert(transactionsTable).values({
+    const insertedTransactionId = await db.insert(transactionsTable).values({
         trackedMonthId: id,
         transactionType: type,
         category: category,
         amount: amount.toString(),
+    }).returning({
+        id: transactionsTable.id
     });
+
+    return getTransactionById(insertedTransactionId[0].id);
+
 }
 
 export async function getCategories() {

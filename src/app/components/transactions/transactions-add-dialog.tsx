@@ -13,13 +13,22 @@ interface Category {
     name: string;
 }
 
-interface AddTransactionDialogProps {
-    selectedMonth: string;
-    selectedYear: number;
-    categories: Category[];
+interface Transaction {
+    id: string;
+    transactionType: string;
+    amount: number;
+    categoryId: string;
+    categoryName: string;
 }
 
-export function AddTransactionDialog({categories, selectedMonth, selectedYear}: AddTransactionDialogProps) {
+interface AddTransactionDialogProps {
+    categories: Category[];
+    selectedMonth: string;
+    selectedYear: number;
+    addTransactionToList: (transaction: Transaction) => void;
+}
+
+export function AddTransactionDialog({categories, selectedMonth, selectedYear, addTransactionToList}: AddTransactionDialogProps) {
 
     const [selectedCategory, setSelectedCategory] = useState<string>('');
     const [selectedType, setSelectedType] = useState<string>('NEGATIVE');
@@ -41,8 +50,11 @@ export function AddTransactionDialog({categories, selectedMonth, selectedYear}: 
                         Voeg een of meerdere transacties toe, dit dialoogvenster blijft open.
                     </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={() => addTransaction(selectedMonth, selectedYear, selectedCategory, selectedType, amount)} className="flex flex-col space-y-4">
-                    {/* Eerste Select met 100% breedte */}
+                <form onSubmit={async (e) => {
+                    e.preventDefault();
+                    const addedTransaction = await addTransaction(selectedMonth, selectedYear, selectedCategory, selectedType, amount);
+                    addTransactionToList(addedTransaction);
+                }} className="flex flex-col space-y-4">
                     <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                         <SelectTrigger className="w-full">
                             <SelectValue placeholder="Kies een categorie" />
@@ -56,7 +68,6 @@ export function AddTransactionDialog({categories, selectedMonth, selectedYear}: 
                         </SelectContent>
                     </Select>
 
-                    {/* De tweede Select en Input op dezelfde lijn */}
                     <div className="flex space-x-4">
                         <Select value={selectedType} onValueChange={setSelectedType}>
                             <SelectTrigger className="w-[20%]">
@@ -73,6 +84,8 @@ export function AddTransactionDialog({categories, selectedMonth, selectedYear}: 
                             placeholder="Bedrag" 
                             className="w-[80%]" 
                             value={amount} 
+                            min={0.01}
+                            step={0.01}
                             onChange={(e) => setAmount(parseFloat(e.target.value) || 0)} 
                         />
                     </div>
