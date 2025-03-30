@@ -10,12 +10,18 @@
     "db:migrate": "drizzle-kit generate && drizzle-kit push"
   },
   "dependencies": {
+    "@radix-ui/react-select": "^2.1.6",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "dotenv": "^16.4.7",
     "drizzle-orm": "^0.41.0",
+    "lucide-react": "^0.485.0",
     "next": "15.2.4",
     "pg": "^8.14.1",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "tailwind-merge": "^3.0.2",
+    "tw-animate-css": "^1.2.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

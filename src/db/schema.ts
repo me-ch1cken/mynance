@@ -9,7 +9,13 @@ export const trackedMonthsTable = pgTable('tracked_months', {
 
 export const transactionsTable = pgTable('transactions', {
     id: uuid('id').primaryKey().defaultRandom(),
-    trackedMonthId: uuid('tracked_month_id').notNull().references(() => trackedMonthsTable.id), // Verwijzing naar tracked_months
+    trackedMonthId: uuid('tracked_month_id').notNull().references(() => trackedMonthsTable.id),
     transactionType: varchar('transaction_type', { length: 8 }).notNull(),
+    category: uuid('category_id').notNull().references(() => categoriesTable.id),
     amount: decimal('amount', { scale: 2 }).notNull()
+});
+
+export const categoriesTable = pgTable('categories', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    name: varchar().notNull()
 });

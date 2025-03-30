@@ -22,10 +22,10 @@ export function LandingPageComponent({months, trackedMonths}: LandingPageProps) 
 
     return (
         <div className="flex">
-            <div className="w-1/5 p-4"> {/* 20% width for Timeline */}
+            <div className="w-1/5 p-4">
                 <Timeline months={months} trackedMonths={trackedMonths} selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
             </div>
-            <div className="w-4/5 p-4"> {/* 80% width for TransactionsList */}
+            <div className="w-4/5 p-4">
                 <TransactionsList selectedMonth={selectedMonth} />
             </div>
         </div>
