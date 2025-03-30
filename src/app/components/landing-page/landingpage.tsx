@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Timeline } from "../timeline/timeline";
-import { TransactionsList } from "../transactions/transactions-list";
+import { Transactions } from "../transactions/transactions";
 
 interface TrackedMonth {
     id: string;
@@ -26,7 +26,7 @@ export function LandingPageComponent({months, trackedMonths}: LandingPageProps) 
                 <Timeline months={months} trackedMonths={trackedMonths} selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
             </div>
             <div className="w-4/5 p-4">
-                <TransactionsList selectedMonth={selectedMonth} />
+                <Transactions selectedMonth={selectedMonth} />
             </div>
         </div>
     );

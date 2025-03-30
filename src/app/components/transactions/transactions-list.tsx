@@ -1,93 +1,32 @@
-'use client';
-
-import { useEffect, useState } from "react";
-import { getCategories, getTransactionsForSelectedMonthAndYear } from "@/db/actions";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { SelectLabel } from "@radix-ui/react-select";
-
-interface TransactionsListProps {
-    selectedMonth: string;
-}
-
 interface Transaction {
     id: string;
     transactionType: string;
-    amount: string;
+    amount: number;
     categoryId: string;
+    categoryName: string;
 }
 
-interface Category {
-    id: string;
-    name: string;
+interface TransactionsListProps {
+    transactions: Transaction[];
 }
 
-export function TransactionsList({ selectedMonth }: TransactionsListProps) {
-    const [transactions, setTransactions] = useState<Transaction[]>([]);
-    const [categories, setCategories] = useState<Category[]>([]);
+export function TransactionsList({transactions}: TransactionsListProps) {
 
-    const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>(transactions);
-    const [selectedTransactionType, setSelectedTransactionType] = useState<string>("ALL");
-    const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
-    const date = new Date();
+    const total: number = transactions.reduce((sum, tx) => tx.transactionType === 'POSITIVE' ? sum + tx.amount : sum - tx.amount, 0);
 
-    useEffect(() => {
-        async function fetchData() {
-            const transactions: Transaction[] = await getTransactionsForSelectedMonthAndYear(selectedMonth, date.getFullYear());
-            setTransactions(transactions);
-            setSelectedCategory('ALL');
-            setSelectedTransactionType('ALL');
-            setFilteredTransactions(transactions);
-        }
-
-        console.log(transactions);
-        fetchData();
-    }, [selectedMonth]);
-
-    useEffect(() => {
-
-        setFilteredTransactions(transactions.filter((tx) => (tx.transactionType === selectedTransactionType || selectedTransactionType === 'ALL') && (selectedCategory === 'ALL' || tx.categoryId === selectedCategory)));
-
-    }, [selectedTransactionType, selectedCategory]);
-
-    useEffect(() => {
-        async function fetchData() {
-            const categories: Category[] = await getCategories();
-            setCategories(categories);
-        }
-
-        fetchData();
-    }, [])
+    if(!transactions || transactions.length === 0) {
+        return (
+            <div className="flex items-start justify-start mt-4">
+                <p className="text-gray-500 text-lg">Geen transacties gevonden die aan uw filters voldoen.</p>
+            </div>
+        );
+    }
 
     return (
-        <div>
-            <h1 className={'font-bold text-lg'}>{selectedMonth} {date.getFullYear()}</h1>
-            <ul className="mt-4 flex space-x-4">
-                <li>
-                    <Select value={selectedTransactionType} onValueChange={setSelectedTransactionType}>
-                        <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Inkomst" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value='ALL'>Alle</SelectItem>
-                            <SelectItem value="POSITIVE">Inkomst</SelectItem>
-                            <SelectItem value="NEGATIVE">Uitgave</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </li>
-                <li>
-                    <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                        <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Kies een categorie" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value='ALL'>Alle</SelectItem>
-                            {categories.map(category => <SelectItem key={category.id} value={category.id}>{category.name}</SelectItem>)}
-                        </SelectContent>
-                    </Select>
-                </li>
-            </ul>
-            <ul>
-                {filteredTransactions.map((tx) => JSON.stringify(tx))}
+        <div className="mt-4">
+            <h3><strong>Totaal: </strong> &euro; <span className={`${total > 0 ? 'text-green-500' : 'text-red-500'}`}>{total.toFixed(2)}</span></h3>
+            <ul className='mt-4'>
+                {transactions.map((tx) => JSON.stringify(tx))}
             </ul>
         </div>
     );

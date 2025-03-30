@@ -27,10 +27,19 @@ export async function getTransactionsForSelectedMonthAndYear(month: string, year
 
     const id = trackedMonthIDs.length > 0 ? trackedMonthIDs[0].id : (await createMonth(month, year));
 
-    const transactions = await db
-        .select({id: transactionsTable.id, transactionType: transactionsTable.transactionType, amount: transactionsTable.amount, categoryId: transactionsTable.category})
+    const transactions = (await db
+        .select({
+          id: transactionsTable.id,
+          transactionType: transactionsTable.transactionType,
+          amount: transactionsTable.amount,
+          categoryId: transactionsTable.category,
+          categoryName: categoriesTable.name,
+        })
         .from(transactionsTable)
-        .where(eq(transactionsTable.trackedMonthId, id));
+        .innerJoin(categoriesTable, eq(transactionsTable.category, categoriesTable.id))
+        .where(eq(transactionsTable.trackedMonthId, id)))
+        .map(tx => ({ ...tx, amount: Number(tx.amount) }));
+
 
     return transactions;
 }
