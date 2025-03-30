@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from './index';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, asc, desc } from 'drizzle-orm';
 import { categoriesTable, trackedMonthsTable, transactionsTable } from "./schema";
 
 export async function getMonthsForSelectedYear(year: number) {
@@ -37,8 +37,10 @@ export async function getTransactionsForSelectedMonthAndYear(month: string, year
         })
         .from(transactionsTable)
         .innerJoin(categoriesTable, eq(transactionsTable.category, categoriesTable.id))
-        .where(eq(transactionsTable.trackedMonthId, id)))
-        .map(tx => ({ ...tx, amount: Number(tx.amount) }));
+        .where(eq(transactionsTable.trackedMonthId, id))
+        .orderBy(desc(transactionsTable.transactionType))
+      ).map(tx => ({ ...tx, amount: Number(tx.amount) }));
+      
 
 
     return transactions;

@@ -23,10 +23,15 @@ export function TransactionsList({transactions}: TransactionsListProps) {
     }
 
     return (
-        <div className="mt-4">
-            <h3><strong>Totaal: </strong> &euro; <span className={`${total > 0 ? 'text-green-500' : 'text-red-500'}`}>{total.toFixed(2)}</span></h3>
-            <ul className='mt-4'>
-                {transactions.map((tx) => JSON.stringify(tx))}
+        <div className="mt-4 me-80">
+            <h3><strong>Totaal: </strong><span className={`${total > 0 ? 'text-green-500' : 'text-red-500'}`}>&euro; {total.toFixed(2)}</span></h3>
+            <ul className="mt-4 space-y-2">
+                {transactions.map((tx, i) => (
+                    <li key={tx.id} className={`flex justify-between items-center py-2 my-0 px-4 border-gray-200 ${i !== transactions.length - 1 ? 'border-b' : null}`}>
+                        <span>&euro; <span className={`${tx.transactionType === 'POSITIVE' ? 'text-green-500' : 'text-red-500'}`}>{tx.amount.toFixed(2)}</span></span>
+                        <span className="text-sm text-gray-600">{tx.categoryName}</span>
+                    </li>
+                ))}
             </ul>
         </div>
     );
