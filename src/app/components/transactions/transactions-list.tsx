@@ -1,3 +1,5 @@
+import { Badge } from "@/components/ui/badge";
+
 interface Transaction {
     id: string;
     transactionType: string;
@@ -13,6 +15,9 @@ interface TransactionsListProps {
 export function TransactionsList({transactions}: TransactionsListProps) {
 
     const total: number = transactions.reduce((sum, tx) => tx.transactionType === 'POSITIVE' ? sum + tx.amount : sum - tx.amount, 0);
+    const positiveTransactions = transactions.filter(tx => tx.transactionType === 'POSITIVE');
+    const negativeTransactions = transactions.filter(tx => tx.transactionType === 'NEGATIVE');
+
 
     if(!transactions || transactions.length === 0) {
         return (
@@ -24,15 +29,52 @@ export function TransactionsList({transactions}: TransactionsListProps) {
 
     return (
         <div className="mt-4 me-80">
-            <h3><strong>Totaal: </strong><span className={`${total > 0 ? 'text-green-500' : 'text-red-500'}`}>&euro; {total.toFixed(2)}</span></h3>
-            <ul className="mt-4 space-y-2">
-                {transactions.map((tx, i) => (
-                    <li key={tx.id} className={`flex justify-between items-center py-2 my-0 px-4 border-gray-200 ${i !== transactions.length - 1 ? 'border-b' : null}`}>
-                        <span>&euro; <span className={`${tx.transactionType === 'POSITIVE' ? 'text-green-500' : 'text-red-500'}`}>{tx.amount.toFixed(2)}</span></span>
-                        <span className="text-sm text-gray-600">{tx.categoryName}</span>
-                    </li>
-                ))}
-            </ul>
+            <h3>
+                <strong>Totaal: </strong>
+                <span className={`${total > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                    &euro; {total.toFixed(2)}
+                </span>
+            </h3>
+            <div className="mt-4 flex flex-wrap gap-4">
+                <div className="flex-1 min-w-[300px]">
+                    <h4 className="font-semibold mb-2">Inkomsten</h4>
+                    {positiveTransactions.length > 0 ? (
+                        <div className="flex flex-wrap gap-2">
+                            {positiveTransactions.map((tx) => (
+                                <div key={tx.id} className="flex items-center gap-2 border border-gray-300 p-2 rounded-lg">
+                                    <Badge className="bg-green-500 text-white">
+                                        {tx.categoryName}
+                                    </Badge>
+                                    <span>
+                                        &euro; {tx.amount.toFixed(2)}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-gray-500">Geen inkomsten gevonden die aan uw filters voldoen.</p>
+                    )}
+                </div>
+                <div className="flex-1 min-w-[300px]">
+                    <h4 className="font-semibold mb-2">Uitgaven</h4>
+                    {negativeTransactions.length > 0 ? (
+                        <div className="flex flex-wrap gap-2">
+                            {negativeTransactions.map((tx) => (
+                                <div key={tx.id} className="flex items-center gap-2 border border-gray-300 p-2 rounded-lg">
+                                    <Badge className="bg-red-500 text-white">
+                                        {tx.categoryName}
+                                    </Badge>
+                                    <span>
+                                        &euro; {tx.amount.toFixed(2)}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-gray-500">Geen uitgaven gevonden die aan uw filters voldoen.</p>
+                    )}
+                </div>
+            </div>
         </div>
     );
 }
