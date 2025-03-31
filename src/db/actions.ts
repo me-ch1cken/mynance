@@ -9,6 +9,11 @@ export async function getMonthsForSelectedYear(year: number) {
     return months ?? null;
 }
 
+export async function getAvailableYears() {
+    const years = (await db.selectDistinct({year: trackedMonthsTable.year}).from(trackedMonthsTable).execute()).map(y => y.year);
+    return years ?? null;
+}
+
 export async function getTotalExpensesForSelectedYear(year: number) {
     let total: number = 0;
 

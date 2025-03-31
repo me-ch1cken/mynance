@@ -50,7 +50,7 @@ export function Transactions({ selectedMonth, selectedYear, months, transactions
 
     useEffect(() => {
         async function fetchData() {
-            const transactions: Transaction[] = await getTransactionsForSelectedMonthAndYear(selectedMonth, date.getFullYear());
+            const transactions: Transaction[] = await getTransactionsForSelectedMonthAndYear(selectedMonth, selectedYear);
             setTransactions(transactions);
             setSelectedCategory('ALL');
             setSelectedTransactionType('ALL');
@@ -77,7 +77,7 @@ export function Transactions({ selectedMonth, selectedYear, months, transactions
 
     return (
         <div>
-            <h1 className={'font-bold text-lg'}>{selectedMonth} {date.getFullYear()}</h1>
+            <h1 className={'font-bold text-lg'}>{selectedMonth} {selectedYear}</h1>
             <ul className="mt-4 flex space-x-4">
                 <li>
                     <Select value={selectedTransactionType} onValueChange={setSelectedTransactionType}>
