@@ -10,6 +10,8 @@ interface TransactionsProps {
     selectedMonth: string;
     selectedYear: number;
     months: string[];
+    transactions: Transaction[];
+    setTransactions: (transactions: Transaction[]) => void;
 }
 
 interface Transaction {
@@ -25,8 +27,8 @@ interface Category {
     name: string;
 }
 
-export function Transactions({ selectedMonth, selectedYear, months }: TransactionsProps) {
-    const [transactions, setTransactions] = useState<Transaction[]>([]);
+export function Transactions({ selectedMonth, selectedYear, months, transactions, setTransactions }: TransactionsProps) {
+    
     const [categories, setCategories] = useState<Category[]>([]);
 
     const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>(transactions);

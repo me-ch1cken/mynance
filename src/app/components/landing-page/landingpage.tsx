@@ -11,6 +11,14 @@ interface TrackedMonth {
     completed: boolean;
 }
 
+interface Transaction {
+    id: string;
+    transactionType: string;
+    amount: number;
+    categoryId: string;
+    categoryName: string;
+}
+
 interface LandingPageProps {
     months: string[];
     trackedMonths: TrackedMonth[];
@@ -18,15 +26,17 @@ interface LandingPageProps {
 
 export function LandingPageComponent({months, trackedMonths}: LandingPageProps) {
     const date = new Date();
+
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [selectedMonth, setSelectedMonth] = useState(months[date.getMonth()]);
 
     return (
         <div className="flex">
             <div className="w-1/5 p-4">
-                <Timeline months={months} trackedMonths={trackedMonths} selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
+                <Timeline months={months} trackedMonths={trackedMonths} selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} transactions={transactions} />
             </div>
             <div className="w-4/5 p-4">
-                <Transactions selectedMonth={selectedMonth} selectedYear={date.getFullYear()} months={months} />
+                <Transactions selectedMonth={selectedMonth} selectedYear={date.getFullYear()} months={months} transactions={transactions} setTransactions={setTransactions}/>
             </div>
         </div>
     );

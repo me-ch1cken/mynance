@@ -1,13 +1,40 @@
 'use server';
 
 import { db } from './index';
-import { eq, and, asc, desc } from 'drizzle-orm';
+import { eq, and, desc } from 'drizzle-orm';
 import { categoriesTable, trackedMonthsTable, transactionsTable } from "./schema";
-import { revalidatePath, revalidateTag } from 'next/cache';
 
 export async function getMonthsForSelectedYear(year: number) {
     const months = await db.select().from(trackedMonthsTable).where(eq(trackedMonthsTable.year, year)).execute();
     return months ?? null;
+}
+
+export async function getTotalExpensesForSelectedYear(year: number) {
+    let total: number = 0;
+
+    const [totalPositive, totalNegative] = await Promise.all([
+        db
+            .select({ amount: transactionsTable.amount })
+            .from(trackedMonthsTable)
+            .where(and(eq(trackedMonthsTable.year, year), eq(transactionsTable.transactionType, 'POSITIVE')))
+            .innerJoin(transactionsTable, eq(transactionsTable.trackedMonthId, trackedMonthsTable.id))
+            .execute()
+            .then(res => res.map(tx => ({ ...tx, amount: Number(tx.amount) }))),
+    
+        db
+            .select({ amount: transactionsTable.amount })
+            .from(trackedMonthsTable)
+            .where(and(eq(trackedMonthsTable.year, year), eq(transactionsTable.transactionType, 'NEGATIVE')))
+            .innerJoin(transactionsTable, eq(transactionsTable.trackedMonthId, trackedMonthsTable.id))
+            .execute()
+            .then(res => res.map(tx => ({ ...tx, amount: Number(tx.amount) }))),
+    ]);
+    
+
+    total = totalPositive.reduce((sum, tx) => sum + tx.amount, 0);
+    total -= totalNegative.reduce((sum, tx) => sum += tx.amount, 0);
+
+    return total;
 }
 
 export async function createMonth(month: string, year: number) {
