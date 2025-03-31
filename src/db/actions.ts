@@ -125,6 +125,10 @@ export async function addTransaction(month: string, year: number, category: stri
 
 }
 
+export async function deleteTransaction(id: string) {
+    await db.delete(transactionsTable).where(eq(transactionsTable.id, id));
+}
+
 export async function getCategories() {
     return await db.select().from(categoriesTable);
 }

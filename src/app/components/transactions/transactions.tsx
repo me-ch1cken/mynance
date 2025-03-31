@@ -34,7 +34,9 @@ export function Transactions({ selectedMonth, selectedYear, months, transactions
     const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>(transactions);
     const [selectedTransactionType, setSelectedTransactionType] = useState<string>("ALL");
     const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
+
     const date = new Date();
+    const total = transactions.reduce((sum, tx) => tx.transactionType === 'POSITIVE' ? sum + tx.amount : sum - tx.amount, 0);
 
     const addTransaction = (transaction: Transaction) => {
 
@@ -46,6 +48,11 @@ export function Transactions({ selectedMonth, selectedYear, months, transactions
         });
         setTransactions(sortedTransactions);
 
+    }
+
+    const removeTransaction = (id: string) => {
+        const transactionAfterDelete = transactions.filter(tx => tx.id !== id);
+        setTransactions([...transactionAfterDelete]);
     }
 
     const addCategory = (category: Category) => {
@@ -81,7 +88,7 @@ export function Transactions({ selectedMonth, selectedYear, months, transactions
 
     return (
         <div>
-            <h1 className={'font-bold text-lg'}>{selectedMonth} {selectedYear}</h1>
+            <h1 className={'font-bold text-lg'}>{selectedMonth} {selectedYear} (<span className={`${total > 0 ? 'text-green-500' : 'text-red-500'} font-normal`}>&euro; {Math.abs(total).toFixed(2)}</span>)</h1>
             <ul className="mt-4 flex space-x-4">
                 <li>
                     <Select value={selectedTransactionType} onValueChange={setSelectedTransactionType}>
@@ -110,7 +117,7 @@ export function Transactions({ selectedMonth, selectedYear, months, transactions
                     { date.getMonth() === months.indexOf(selectedMonth) && date.getFullYear() === selectedYear ? <AddTransactionDialog categories={categories} selectedMonth={selectedMonth} selectedYear={selectedYear} addTransactionToList={addTransaction} addCategoryToList={addCategory} /> : null }
                 </li>
             </ul>
-            <TransactionsList transactions={filteredTransactions}/>
+            <TransactionsList transactions={filteredTransactions} removeTransaction={removeTransaction}/>
         </div>
     );
 }

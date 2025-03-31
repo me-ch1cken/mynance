@@ -1,4 +1,6 @@
 import { Badge } from "@/components/ui/badge";
+import { Trash2 } from "lucide-react";
+import { TransactionItem } from "./transaction-item";
 
 interface Transaction {
     id: string;
@@ -10,9 +12,10 @@ interface Transaction {
 
 interface TransactionsListProps {
     transactions: Transaction[];
+    removeTransaction: (id: string) => void;
 }
 
-export function TransactionsList({transactions}: TransactionsListProps) {
+export function TransactionsList({transactions, removeTransaction}: TransactionsListProps) {
 
     const total: number = transactions.reduce((sum, tx) => tx.transactionType === 'POSITIVE' ? sum + tx.amount : sum - tx.amount, 0);
     const positiveTransactions = transactions.filter(tx => tx.transactionType === 'POSITIVE');
@@ -40,16 +43,7 @@ export function TransactionsList({transactions}: TransactionsListProps) {
                     <h4 className="font-semibold mb-2">Inkomsten</h4>
                     {positiveTransactions.length > 0 ? (
                         <div className="flex flex-wrap gap-2">
-                            {positiveTransactions.map((tx) => (
-                                <div key={tx.id} className="flex items-center gap-2 border border-gray-300 p-2 rounded-lg">
-                                    <Badge className="bg-green-500 text-white">
-                                        {tx.categoryName}
-                                    </Badge>
-                                    <span>
-                                        &euro; {tx.amount.toFixed(2)}
-                                    </span>
-                                </div>
-                            ))}
+                            {positiveTransactions.map((tx) => <TransactionItem key={tx.id} transaction={tx} fromDialog={false} removeTransaction={removeTransaction} />)}
                         </div>
                     ) : (
                         <p className="text-gray-500">Geen inkomsten gevonden die aan uw filters voldoen.</p>
@@ -59,16 +53,7 @@ export function TransactionsList({transactions}: TransactionsListProps) {
                     <h4 className="font-semibold mb-2">Uitgaven</h4>
                     {negativeTransactions.length > 0 ? (
                         <div className="flex flex-wrap gap-2">
-                            {negativeTransactions.map((tx) => (
-                                <div key={tx.id} className="flex items-center gap-2 border border-gray-300 p-2 rounded-lg">
-                                    <Badge className="bg-red-500 text-white">
-                                        {tx.categoryName}
-                                    </Badge>
-                                    <span>
-                                        &euro; {tx.amount.toFixed(2)}
-                                    </span>
-                                </div>
-                            ))}
+                            {negativeTransactions.map((tx) => <TransactionItem key={tx.id} transaction={tx} fromDialog={false} removeTransaction={removeTransaction} />)}
                         </div>
                     ) : (
                         <p className="text-gray-500">Geen uitgaven gevonden die aan uw filters voldoen.</p>
