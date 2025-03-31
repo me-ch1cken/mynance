@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { useEffect, useState } from "react";
-import { addTransaction } from "@/db/actions";
+import { addTransaction, createCategory } from "@/db/actions";
 
 interface Category {
     id: string;
@@ -26,13 +26,22 @@ interface AddTransactionDialogProps {
     selectedMonth: string;
     selectedYear: number;
     addTransactionToList: (transaction: Transaction) => void;
+    addCategoryToList: (category: Category) => void
 }
 
-export function AddTransactionDialog({categories, selectedMonth, selectedYear, addTransactionToList}: AddTransactionDialogProps) {
+export function AddTransactionDialog({categories, selectedMonth, selectedYear, addTransactionToList, addCategoryToList}: AddTransactionDialogProps) {
 
     const [selectedCategory, setSelectedCategory] = useState<string>('');
     const [selectedType, setSelectedType] = useState<string>('NEGATIVE');
     const [amount, setAmount] = useState<number>(0);
+
+    const [newCategory, setNewCategory] = useState<string>('');
+
+    const handleCreateCategory = async (name: string) => {
+        const category = await createCategory(name);
+        addCategoryToList(category);
+        setNewCategory('');
+    }
 
     useEffect(() => {
         setSelectedCategory(categories[0]?.id);
@@ -60,6 +69,15 @@ export function AddTransactionDialog({categories, selectedMonth, selectedYear, a
                             <SelectValue placeholder="Kies een categorie" />
                         </SelectTrigger>
                         <SelectContent>
+                            <div className="p-2">
+                                <Input
+                                    type="text"
+                                    placeholder="Nieuwe categorie"
+                                    value={newCategory}
+                                    onChange={(e) => setNewCategory(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Enter' && handleCreateCategory(newCategory)}
+                                />
+                            </div>
                             {categories.map(category => (
                                 <SelectItem key={category.id} value={category.id}>
                                     {category.name}

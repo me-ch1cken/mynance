@@ -48,6 +48,10 @@ export function Transactions({ selectedMonth, selectedYear, months, transactions
 
     }
 
+    const addCategory = (category: Category) => {
+        setCategories([...categories, category]);
+    }
+
     useEffect(() => {
         async function fetchData() {
             const transactions: Transaction[] = await getTransactionsForSelectedMonthAndYear(selectedMonth, selectedYear);
@@ -103,7 +107,7 @@ export function Transactions({ selectedMonth, selectedYear, months, transactions
                     </Select>
                 </li>
                 <li>
-                    { date.getMonth() === months.indexOf(selectedMonth) && date.getFullYear() === selectedYear ? <AddTransactionDialog categories={categories} selectedMonth={selectedMonth} selectedYear={selectedYear} addTransactionToList={addTransaction} /> : null }
+                    { date.getMonth() === months.indexOf(selectedMonth) && date.getFullYear() === selectedYear ? <AddTransactionDialog categories={categories} selectedMonth={selectedMonth} selectedYear={selectedYear} addTransactionToList={addTransaction} addCategoryToList={addCategory} /> : null }
                 </li>
             </ul>
             <TransactionsList transactions={filteredTransactions}/>

@@ -128,3 +128,8 @@ export async function addTransaction(month: string, year: number, category: stri
 export async function getCategories() {
     return await db.select().from(categoriesTable);
 }
+
+export async function createCategory(name: string) {
+    const [category] = await db.insert(categoriesTable).values({name: name}).returning({id: categoriesTable.id, name: categoriesTable.name});
+    return category;
+}
