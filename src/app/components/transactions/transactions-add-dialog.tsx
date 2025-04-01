@@ -102,6 +102,7 @@ export function AddTransactionDialog({categories, selectedMonth, selectedYear, a
                             placeholder="Bedrag" 
                             className="w-[80%]" 
                             value={amount} 
+                            onFocus={(e) => e.target.select()}
                             min={0.01}
                             step={0.01}
                             onChange={(e) => setAmount(parseFloat(e.target.value) || 0)} 
