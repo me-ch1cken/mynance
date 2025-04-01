@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: transaction-tracker
+    restart: always
+    environment:
+      POSTGRES_USER: tt_admin
+      POSTGRES_PASSWORD: fvag_rd45qr
+      POSTGRES_DB: ttracker
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+volumes:
+  pgdata:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ~/Projects/db-files/transaction-tracker
+
+networks:
+  app_network:
