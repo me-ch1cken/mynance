@@ -15,6 +15,13 @@
       "when": 1743247153642,
       "tag": "0001_furry_husk",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1743602665947,
+      "tag": "0002_flippant_nightcrawler",
+      "breakpoints": true
     }
   ]
 }

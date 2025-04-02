@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from "react";
 import { TimelineItem } from "./timeline-item";
-import { getAvailableYears, getTotalExpensesForSelectedYear } from "@/db/actions";
+import { getAvailableYears, getTotalExpensesForSelectedYear } from "@/app/db/actions";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 interface TrackedMonth {

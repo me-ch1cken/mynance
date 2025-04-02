@@ -2,7 +2,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { TransactionItem } from "./transaction-item";
-import { deleteTransaction } from "@/db/actions";
+import { deleteTransaction } from "@/app/db/actions";
 
 interface Transaction {
     id: string;

@@ -1,4 +1,4 @@
-import { createMonth, getMonthsForSelectedYear } from "@/db/actions";
+import { createMonth, getMonthsForSelectedYear } from "@/app/db/actions";
 import { LandingPageComponent } from "./components/landing-page/landingpage";
 
 export default async function LandingPage() {

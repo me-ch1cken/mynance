@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { useEffect, useState } from "react";
-import { addTransaction, createCategory } from "@/db/actions";
+import { addTransaction, createCategory } from "@/app/db/actions";
 
 interface Category {
     id: string;
