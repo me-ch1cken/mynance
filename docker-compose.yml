@@ -1,14 +1,12 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:latest
     container_name: transaction-tracker
     restart: always
     environment:
-      POSTGRES_USER: tt_admin
-      POSTGRES_PASSWORD: fvag_rd45qr
-      POSTGRES_DB: ttracker
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
     ports:
       - "5432:5432"
     volumes:

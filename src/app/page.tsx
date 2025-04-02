@@ -60,7 +60,7 @@ export default function LandingPage() {
               </div>
               <div className="relative aspect-video overflow-hidden rounded-xl border shadow-xl">
                 <Image
-                  src="/placeholder.svg?height=720&width=1280"
+                  src="/interface.png"
                   alt="FinTrack Dashboard"
                   width={1280}
                   height={720}
@@ -197,11 +197,10 @@ export default function LandingPage() {
                   for your own financial applications.
                 </p>
                 <div className="flex flex-wrap gap-3 pt-4">
-                  <div className="rounded-full bg-slate-100 px-3 py-1 text-sm">React</div>
                   <div className="rounded-full bg-slate-100 px-3 py-1 text-sm">Next.js</div>
                   <div className="rounded-full bg-slate-100 px-3 py-1 text-sm">TypeScript</div>
                   <div className="rounded-full bg-slate-100 px-3 py-1 text-sm">Tailwind CSS</div>
-                  <div className="rounded-full bg-slate-100 px-3 py-1 text-sm">Prisma</div>
+                  <div className="rounded-full bg-slate-100 px-3 py-1 text-sm">Drizzle ORM</div>
                 </div>
                 <div className="pt-4">
                   <Button className="bg-emerald-500 hover:bg-emerald-600">
