@@ -4,7 +4,6 @@ import { Search } from "lucide-react";
 import { Button } from "../ui/button";
 import { DialogHeader, DialogFooter, Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger, DialogClose } from "../ui/dialog";
 import { PieChartComponent } from "../charts/pie-chart";
-import { useEffect, useState } from "react";
 import { BarChartComponent } from "../charts/bar-chart";
 
 interface Transaction {
@@ -27,21 +26,36 @@ export function ShowOverviewDialog({ transactions, selectedMonth }: OverviewDial
             <DialogTrigger asChild>
                 <Button><Search />Toon overzicht</Button>
             </DialogTrigger>
-            <DialogContent className="w-[700px]">
+            <DialogContent className="w-[680px]">
                 <DialogHeader>
                     <DialogTitle>Overzicht voor {selectedMonth}</DialogTitle>
                     <DialogDescription>
                         Krijg een duidelijker beeld van je uitgaven.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="flex flex-wrap justify-center gap-4">
-                    <PieChartComponent transactions={transactions} />
-                    <BarChartComponent transactions={transactions} />
-                </div>
+                {charts(transactions)}
                 <DialogFooter>
                     <DialogClose asChild><Button type="submit" variant={'ghost'}>Sluit venster</Button></DialogClose>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
     )
+}
+
+function charts(transactions: Transaction[]) {
+
+    if(!transactions || transactions.length === 0) {
+        return (
+            <div className="flex justify-center items-center h-full mt-4">
+                <p className="text-sm text-muted-foreground">Je hebt nog geen transacties toegevoegd voor deze maand.</p>
+            </div>
+        );
+    }
+
+    return (
+        <div className="flex flex-wrap justify-center gap-4">
+            <PieChartComponent transactions={transactions} />
+            <BarChartComponent transactions={transactions} />
+        </div>
+    );
 }
