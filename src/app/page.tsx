@@ -2,38 +2,12 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/app/components/ui/button"
 import { BarChart3, Code2, CreditCard, Download, Github, LineChart, PieChart, Plus, Wallet } from "lucide-react"
+import { Navbar } from '@/app/components/ui/navbar'
 
 export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto flex h-16 items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Wallet className="h-6 w-6 text-emerald-500" />
-            <span className="text-xl font-bold">FinTrack</span>
-          </div>
-          <nav className="hidden md:flex gap-6">
-            <Link href="#features" className="text-sm font-medium hover:text-emerald-500 transition-colors">
-              Features
-            </Link>
-            <Link href="#how-it-works" className="text-sm font-medium hover:text-emerald-500 transition-colors">
-              How It Works
-            </Link>
-            <Link href="#for-developers" className="text-sm font-medium hover:text-emerald-500 transition-colors">
-              For Developers
-            </Link>
-          </nav>
-          <div className="flex items-center gap-4">
-            <Link href="https://github.com/fintrack/repo" target="_blank" rel="noopener noreferrer">
-              <Button variant="outline" size="icon">
-                <Github className="h-4 w-4" />
-                <span className="sr-only">GitHub</span>
-              </Button>
-            </Link>
-            <Button className="bg-emerald-500 hover:bg-emerald-600">Get Started</Button>
-          </div>
-        </div>
-      </header>
+      <Navbar />
       <main className="flex-1">
         {/* Hero Section */}
         <section className="py-20 md:py-28">
@@ -63,7 +37,7 @@ export default function LandingPage() {
                   src="/interface.png"
                   alt="FinTrack Dashboard"
                   width={1280}
-                  height={720}
+                  height={240}
                   className="object-cover"
                   priority
                 />
@@ -349,6 +323,6 @@ npm run dev`}
         </div>
       </footer>
     </div>
-  )
+  );
 }
 

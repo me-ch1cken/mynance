@@ -1,5 +1,5 @@
 import { createMonth, getMonthsForSelectedYear } from "@/app/db/actions";
-import { LandingPageComponent } from "@/app/components/landing-page/landingpage";
+import { TransactionsPageComponent } from "@/app/components/landing-page/landingpage";
 
 export default async function LandingPage() {
 
@@ -12,6 +12,6 @@ export default async function LandingPage() {
     }
 
     return (
-        <LandingPageComponent months={months} trackedMonths={trackedMonths} />
+        <TransactionsPageComponent months={months} trackedMonths={trackedMonths} />
     );
 }

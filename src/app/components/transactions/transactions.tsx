@@ -5,6 +5,7 @@ import { getCategories, getTransactionsForSelectedMonthAndYear } from "@/app/db/
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { TransactionsList } from "./transactions-list";
 import { AddTransactionDialog } from "./transactions-add-dialog";
+import { ShowOverviewDialog } from "../overview/show-overview-dialog";
 
 interface TransactionsProps {
     selectedMonth: string;
@@ -115,6 +116,9 @@ export function Transactions({ selectedMonth, selectedYear, months, transactions
                 </li>
                 <li>
                     { date.getMonth() === months.indexOf(selectedMonth) && date.getFullYear() === selectedYear ? <AddTransactionDialog categories={categories} selectedMonth={selectedMonth} selectedYear={selectedYear} addTransactionToList={addTransaction} addCategoryToList={addCategory} /> : null }
+                </li>
+                <li className="ml-auto me-16">
+                    <ShowOverviewDialog transactions={filteredTransactions} selectedMonth={selectedMonth} />
                 </li>
             </ul>
             <TransactionsList transactions={filteredTransactions} removeTransaction={removeTransaction}/>

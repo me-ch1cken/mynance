@@ -24,7 +24,7 @@ interface LandingPageProps {
     trackedMonths: TrackedMonth[];
 }
 
-export function LandingPageComponent({months, trackedMonths}: LandingPageProps) {
+export function TransactionsPageComponent({months, trackedMonths}: LandingPageProps) {
     const date = new Date();
 
     const [transactions, setTransactions] = useState<Transaction[]>([]);
