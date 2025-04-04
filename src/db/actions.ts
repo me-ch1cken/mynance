@@ -3,6 +3,7 @@
 import { db } from './index';
 import { eq, and, desc, sql } from 'drizzle-orm';
 import { categoriesTable, trackedMonthsTable, transactionsTable } from "./schema";
+import { auth } from '@/lib/auth';
 
 export async function getMonthsForSelectedYear(year: number) {
     const months = await db.select().from(trackedMonthsTable).where(eq(trackedMonthsTable.year, year)).execute();
@@ -186,4 +187,23 @@ export async function getTotalSavingsUntillThisYear(year: number) {
         .where(sql`${trackedMonthsTable.year} < ${year}`);
 
     return total[0].total;
+}
+
+export async function register() {
+    await auth.api.signUpEmail({
+        body: {
+            email: 'robbe.decroo@mail.com',
+            password: 'test1234',
+            name: 'Robbe Decroo'
+        }
+    });
+}
+
+export async function login() {
+    await auth.api.signInEmail({
+        body: {
+            email: 'robbe.decroo@mail.com',
+            password: 'test1234'
+        }
+    });
 }
