@@ -4,6 +4,7 @@ import { db } from './index';
 import { eq, and, desc, sql } from 'drizzle-orm';
 import { categoriesTable, trackedMonthsTable, transactionsTable } from "./schema";
 import { auth } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
 export async function getMonthsForSelectedYear(year: number) {
     const months = await db.select().from(trackedMonthsTable).where(eq(trackedMonthsTable.year, year)).execute();
@@ -197,6 +198,8 @@ export async function register() {
             name: 'Robbe Decroo'
         }
     });
+    
+    redirect('/transactions');
 }
 
 export async function login() {
@@ -206,4 +209,6 @@ export async function login() {
             password: 'test1234'
         }
     });
+
+    redirect('/transactions');
 }

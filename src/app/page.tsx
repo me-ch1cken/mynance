@@ -22,9 +22,9 @@ export default function LandingPage() {
                   month by month.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 pt-4">
-                  <Button className="bg-emerald-500 hover:bg-emerald-600">
+                  <Link href='/register'><Button className="bg-emerald-500 hover:bg-emerald-600">
                     Get started
-                  </Button>
+                  </Button></Link>
                   <Button variant="outline">
                     <Github className="mr-2 h-4 w-4" />
                     View on GitHub
@@ -289,9 +289,9 @@ npm run dev`}
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 pt-6">
-                <Button className="bg-emerald-500 hover:bg-emerald-600 text-white" size="lg">
+                <Link href='/register'><Button className="bg-emerald-500 hover:bg-emerald-600 text-white" size="lg">
                   Get started
-                </Button>
+                </Button></Link>
                 <Button variant="outline" size="lg">
                   <Github className="mr-2 h-4 w-4" />
                   View on GitHub
