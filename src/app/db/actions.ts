@@ -160,7 +160,6 @@ export async function getIncomeAndExpensesPerMonth(year: number) {
 
     const results = await db
         .select({
-            year: trackedMonthsTable.year,
             month: trackedMonthsTable.month,
             positive: sql<number>`COALESCE(SUM(CASE WHEN ${transactionsTable.transactionType} = 'POSITIVE' THEN ${transactionsTable.amount} ELSE 0 END), 0)`.as('positive'),
             negative: sql<number>`COALESCE(SUM(CASE WHEN ${transactionsTable.transactionType} = 'NEGATIVE' THEN ${transactionsTable.amount} ELSE 0 END), 0)`.as('negative'),
@@ -172,4 +171,19 @@ export async function getIncomeAndExpensesPerMonth(year: number) {
         .orderBy(trackedMonthsTable.year, monthOrder);
 
     return results;
+}
+
+export async function getTotalSavingsUntillThisYear(year: number) {
+    const total = await db
+        .select({
+            total: sql<number>`
+            COALESCE(SUM(CASE WHEN ${transactionsTable.transactionType} = 'POSITIVE' THEN ${transactionsTable.amount} ELSE 0 END), 0) -
+            COALESCE(SUM(CASE WHEN ${transactionsTable.transactionType} = 'NEGATIVE' THEN ${transactionsTable.amount} ELSE 0 END), 0)
+            `.as('total')
+        })
+        .from(transactionsTable)
+        .leftJoin(trackedMonthsTable, eq(transactionsTable.trackedMonthId, trackedMonthsTable.id))
+        .where(sql`${trackedMonthsTable.year} < ${year}`);
+
+    return total[0].total;
 }

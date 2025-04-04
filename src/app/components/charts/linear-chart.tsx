@@ -3,7 +3,7 @@
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent,} from "@/app/components/ui/chart"
 import { useEffect, useState } from "react";
-import { getIncomeAndExpensesPerMonth } from "@/app/db/actions";
+import { getIncomeAndExpensesPerMonth, getTotalSavingsUntillThisYear } from "@/app/db/actions";
 
 interface LinearChartProps {
     transactions: Transaction[];
@@ -22,6 +22,7 @@ interface ChartData {
     month: string;
     positive: number;
     negative: number;
+    totalSavings: number;
 }
 
 export function LinearChartComponent({ transactions, selectedYear }: LinearChartProps) {
@@ -30,21 +31,44 @@ export function LinearChartComponent({ transactions, selectedYear }: LinearChart
 
     const chartConfig = {
         positive: {
-            label: "Gespaard",
+            label: "Inkomsten",
             color: "#32CD32",
         },
         negative: {
             label: "Uitgaven",
             color: "#FF0000",
         },
+        totalSavings: {
+            label: "Gespaard",
+            color: "#FFFF00",
+        }
     } satisfies ChartConfig
 
     useEffect(() => {
         async function getChartData() {
             const chartData = await getIncomeAndExpensesPerMonth(selectedYear);
-            setChartData(chartData);
+            const initialSavings = await getTotalSavingsUntillThisYear(selectedYear);
+    
+            let runningTotal = +initialSavings; // Start vanaf eerder gespaard bedrag
+    
+            const updatedChartData = chartData.map(item => {
+                // Positieve en negatieve bedragen als nummers
+                const income = +item.positive;
+                const expense = +item.negative;
+    
+                // Update de lopende totalSavings
+                runningTotal += income - expense;
+    
+                return {
+                    ...item,
+                    totalSavings: Number(runningTotal.toFixed(2)), // cumulatief bedrag
+                };
+            });
+    
+            console.log(updatedChartData);
+            setChartData(updatedChartData);
         }
-
+    
         getChartData();
     }, [transactions]);
 
@@ -80,6 +104,14 @@ export function LinearChartComponent({ transactions, selectedYear }: LinearChart
                     dataKey="negative"
                     type="monotone"
                     stroke="var(--color-negative)"
+                    strokeWidth={2}
+                    dot={true}
+                    isAnimationActive={false}
+                />
+                <Line
+                    dataKey="totalSavings"
+                    type="monotone"
+                    stroke="var(--color-totalSavings)"
                     strokeWidth={2}
                     dot={true}
                     isAnimationActive={false}
