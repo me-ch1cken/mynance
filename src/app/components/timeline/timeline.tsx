@@ -3,8 +3,7 @@ import { useEffect, useState } from "react";
 import { TimelineItem } from "./timeline-item";
 import { getAvailableYears, getTotalExpensesForSelectedYear } from "@/app/db/actions";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { Button } from "../ui/button";
-import { Search } from "lucide-react";
+import { YearOverviewDialog } from "../overview/year-overview-dialog";
 
 interface TrackedMonth {
     id: string;
@@ -56,7 +55,7 @@ export function Timeline({months, trackedMonths, selectedMonth, transactions, se
 
     return (
         <>
-            <Button className="mx-8 mb-2" variant={'outline'}><Search />Toon jaaroverzicht</Button>
+            <YearOverviewDialog transactions={transactions} selectedYear={selectedYear} />
             <Select value={selectedYear.toString()} onValueChange={(value) => setSelectedYear(Number(value))}>
                 <SelectTrigger className="mx-8 font-bold text-lg">
                     <SelectValue placeholder="Inkomst" />

@@ -62,7 +62,7 @@ export function BarChartComponent({ transactions }: BarChartProps) {
                     axisLine={false}
                 />
                 <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-                <Bar dataKey="amount" fill="var(--color-desktop)" radius={8}>
+                <Bar dataKey="amount" fill="var(--color-desktop)" radius={8} isAnimationActive={false}>
                     <LabelList position="top" offset={12} className="fill-foreground" fontSize={12} />
                 </Bar>
             </BarChart>

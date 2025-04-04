@@ -44,10 +44,20 @@ export function ShowOverviewDialog({ transactions, selectedMonth }: OverviewDial
 
 function charts(transactions: Transaction[]) {
 
+    const negativeTransactions = transactions.filter(tx => tx.transactionType === 'NEGATIVE');
+
     if(!transactions || transactions.length === 0) {
         return (
             <div className="flex justify-center items-center h-full mt-4">
                 <p className="text-sm text-muted-foreground">Je hebt nog geen transacties toegevoegd voor deze maand.</p>
+            </div>
+        );
+    }
+    
+    if(!negativeTransactions || negativeTransactions.length === 0) {
+        return (
+            <div className="flex justify-center items-center h-full mt-4">
+                <p className="text-sm text-muted-foreground">Je hebt nog geen uitgaven toegevoegd voor deze maand.</p>
             </div>
         );
     }

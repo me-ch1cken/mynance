@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from './index';
-import { eq, and, desc } from 'drizzle-orm';
+import { eq, and, desc, sql } from 'drizzle-orm';
 import { categoriesTable, trackedMonthsTable, transactionsTable } from "./schema";
 
 export async function getMonthsForSelectedYear(year: number) {
@@ -136,4 +136,40 @@ export async function getCategories() {
 export async function createCategory(name: string) {
     const [category] = await db.insert(categoriesTable).values({name: name}).returning({id: categoriesTable.id, name: categoriesTable.name});
     return category;
+}
+
+export async function getIncomeAndExpensesPerMonth(year: number) {
+
+    const monthOrder = sql`
+        CASE 
+            WHEN ${trackedMonthsTable.month} = 'Januari' THEN 1
+            WHEN ${trackedMonthsTable.month} = 'Februari' THEN 2
+            WHEN ${trackedMonthsTable.month} = 'Maart' THEN 3
+            WHEN ${trackedMonthsTable.month} = 'April' THEN 4
+            WHEN ${trackedMonthsTable.month} = 'Mei' THEN 5
+            WHEN ${trackedMonthsTable.month} = 'Juni' THEN 6
+            WHEN ${trackedMonthsTable.month} = 'Juli' THEN 7
+            WHEN ${trackedMonthsTable.month} = 'Augustus' THEN 8
+            WHEN ${trackedMonthsTable.month} = 'September' THEN 9
+            WHEN ${trackedMonthsTable.month} = 'Oktober' THEN 10
+            WHEN ${trackedMonthsTable.month} = 'November' THEN 11
+            WHEN ${trackedMonthsTable.month} = 'December' THEN 12
+            ELSE 0
+        END
+    `;
+
+    const results = await db
+        .select({
+            year: trackedMonthsTable.year,
+            month: trackedMonthsTable.month,
+            positive: sql<number>`COALESCE(SUM(CASE WHEN ${transactionsTable.transactionType} = 'POSITIVE' THEN ${transactionsTable.amount} ELSE 0 END), 0)`.as('positive'),
+            negative: sql<number>`COALESCE(SUM(CASE WHEN ${transactionsTable.transactionType} = 'NEGATIVE' THEN ${transactionsTable.amount} ELSE 0 END), 0)`.as('negative'),
+        })
+        .from(trackedMonthsTable)
+        .leftJoin(transactionsTable, eq(transactionsTable.trackedMonthId, trackedMonthsTable.id))
+        .where(eq(trackedMonthsTable.year, year))
+        .groupBy(trackedMonthsTable.year, trackedMonthsTable.month)
+        .orderBy(trackedMonthsTable.year, monthOrder);
+
+    return results;
 }
