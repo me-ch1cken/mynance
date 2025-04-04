@@ -1,7 +1,16 @@
 import { createMonth, getMonthsForSelectedYear } from "@/db/actions";
-import { TransactionsPageComponent } from "@/components/landing-page/landingpage";
+import { TransactionsPageComponent } from "@/components/transactions/transactions-page-component";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 
-export default async function LandingPage() {
+export default async function TransactionsPage() {
+
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
+
+    if (!session) redirect('/login');
 
     const months: string[] = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
     const date = new Date();

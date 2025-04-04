@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Timeline } from "../timeline/timeline";
-import { Transactions } from "../transactions/transactions";
+import { Transactions } from "./transactions";
 
 interface TrackedMonth {
     id: string;
