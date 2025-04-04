@@ -1,5 +1,5 @@
-import { createMonth, getMonthsForSelectedYear } from "@/app/db/actions";
-import { TransactionsPageComponent } from "@/app/components/landing-page/landingpage";
+import { createMonth, getMonthsForSelectedYear } from "@/db/actions";
+import { TransactionsPageComponent } from "@/components/landing-page/landingpage";
 
 export default async function LandingPage() {
 

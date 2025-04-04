@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { getCategories, getTransactionsForSelectedMonthAndYear } from "@/app/db/actions";
+import { getCategories, getTransactionsForSelectedMonthAndYear } from "@/db/actions";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { TransactionsList } from "./transactions-list";
 import { AddTransactionDialog } from "./transactions-add-dialog";

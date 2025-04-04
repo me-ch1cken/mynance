@@ -1,9 +1,9 @@
 "use client"
 
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent,} from "@/app/components/ui/chart"
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent,} from "@/components/ui/chart"
 import { useEffect, useState } from "react";
-import { getIncomeAndExpensesPerMonth, getTotalSavingsUntillThisYear } from "@/app/db/actions";
+import { getIncomeAndExpensesPerMonth, getTotalSavingsUntillThisYear } from "@/db/actions";
 
 interface LinearChartProps {
     transactions: Transaction[];

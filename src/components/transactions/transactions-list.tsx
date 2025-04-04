@@ -1,4 +1,4 @@
-import { Badge } from "@/app/components/ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { Trash2 } from "lucide-react";
 import { TransactionItem } from "./transaction-item";
 

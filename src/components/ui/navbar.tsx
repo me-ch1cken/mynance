@@ -8,7 +8,7 @@ export function Navbar() {
             <div className="container mx-auto flex h-16 items-center justify-between">
                 <div className="flex items-center gap-2">
                     <Wallet className="h-6 w-6 text-emerald-500" />
-                    <span className="text-xl font-bold">FinTrack</span>
+                    <span className="text-xl font-bold">Mynance</span>
                 </div>
                 <nav className="hidden md:flex gap-6">
                     <Link href="#features" className="text-sm font-medium hover:text-emerald-500 transition-colors">

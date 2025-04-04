@@ -1,8 +1,8 @@
 import Link from "next/link"
 import Image from "next/image"
-import { Button } from "@/app/components/ui/button"
-import { BarChart3, Code2, CreditCard, Download, Github, LineChart, PieChart, Plus, Wallet } from "lucide-react"
-import { Navbar } from '@/app/components/ui/navbar'
+import { Button } from "@/components/ui/button"
+import { BarChart3, Code2, CreditCard, Github, LineChart, PieChart, Plus, Wallet } from "lucide-react"
+import { Navbar } from '@/components/ui/navbar'
 
 export default function LandingPage() {
   return (
@@ -15,7 +15,7 @@ export default function LandingPage() {
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
               <div className="space-y-4">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                  Take control of your finances with FinTrack
+                  Take control of your finances with Mynance
                 </h1>
                 <p className="text-muted-foreground md:text-xl">
                   A simple, free, and open-source finance tracking app that helps you monitor your expenses and income
@@ -23,8 +23,7 @@ export default function LandingPage() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 pt-4">
                   <Button className="bg-emerald-500 hover:bg-emerald-600">
-                    <Download className="mr-2 h-4 w-4" />
-                    Download App
+                    Get started
                   </Button>
                   <Button variant="outline">
                     <Github className="mr-2 h-4 w-4" />
@@ -35,7 +34,7 @@ export default function LandingPage() {
               <div className="relative aspect-video overflow-hidden rounded-xl border shadow-xl">
                 <Image
                   src="/interface.png"
-                  alt="FinTrack Dashboard"
+                  alt="Mynance Dashboard"
                   width={1280}
                   height={240}
                   className="object-cover"
@@ -96,7 +95,7 @@ export default function LandingPage() {
           <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">How FinTrack works</h2>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">How Mynance works</h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed">
                   Simple steps to take control of your financial life.
                 </p>
@@ -142,7 +141,7 @@ export default function LandingPage() {
               <div className="relative aspect-square overflow-hidden rounded-xl border shadow-xl">
                 <Image
                   src="/placeholder.svg?height=800&width=800"
-                  alt="FinTrack App Interface"
+                  alt="Mynance App Interface"
                   width={800}
                   height={800}
                   className="object-cover"
@@ -159,7 +158,7 @@ export default function LandingPage() {
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">For Developers</h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed">
-                  FinTrack is completely free and open source. Build upon our foundation.
+                  Mynance is completely free and open source. Build upon our foundation.
                 </p>
               </div>
             </div>
@@ -167,7 +166,7 @@ export default function LandingPage() {
               <div className="space-y-4">
                 <h3 className="text-2xl font-bold">Open Source & Free</h3>
                 <p className="text-muted-foreground">
-                  FinTrack is built with modern technologies and is completely open source. Use it as a starting point
+                  Mynance is built with modern technologies and is completely open source. Use it as a starting point
                   for your own financial applications.
                 </p>
                 <div className="flex flex-wrap gap-3 pt-4">
@@ -229,7 +228,7 @@ npm run dev`}
                 </p>
                 <div className="w-full aspect-square rounded-xl border p-4 shadow-sm">
                   <Image
-                    src="/placeholder.svg?height=300&width=300"
+                    src="/piechart.png"
                     alt="Expense Pie Chart"
                     width={300}
                     height={300}
@@ -247,7 +246,7 @@ npm run dev`}
                 </p>
                 <div className="w-full aspect-square rounded-xl border p-4 shadow-sm">
                   <Image
-                    src="/placeholder.svg?height=300&width=300"
+                    src="/barchart.png"
                     alt="Monthly Bar Chart"
                     width={300}
                     height={300}
@@ -265,7 +264,7 @@ npm run dev`}
                 </p>
                 <div className="w-full aspect-square rounded-xl border p-4 shadow-sm">
                   <Image
-                    src="/placeholder.svg?height=300&width=300"
+                    src="/linechart.png"
                     alt="Savings Line Chart"
                     width={300}
                     height={300}
@@ -291,8 +290,7 @@ npm run dev`}
               </div>
               <div className="flex flex-col sm:flex-row gap-3 pt-6">
                 <Button className="bg-emerald-500 hover:bg-emerald-600 text-white" size="lg">
-                  <Download className="mr-2 h-4 w-4" />
-                  Download Now
+                  Get started
                 </Button>
                 <Button variant="outline" size="lg">
                   <Github className="mr-2 h-4 w-4" />
@@ -307,7 +305,7 @@ npm run dev`}
         <div className="container mx-auto flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
           <div className="flex items-center gap-2">
             <Wallet className="h-5 w-5 text-emerald-500" />
-            <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} FinTrack. All rights reserved.</p>
+            <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} Mynance. All rights reserved.</p>
           </div>
           <div className="flex gap-4">
             <Link href="#" className="text-sm text-muted-foreground hover:underline">

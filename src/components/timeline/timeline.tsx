@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from "react";
 import { TimelineItem } from "./timeline-item";
-import { getAvailableYears, getTotalExpensesForSelectedYear } from "@/app/db/actions";
+import { getAvailableYears, getTotalExpensesForSelectedYear } from "@/db/actions";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { YearOverviewDialog } from "../overview/year-overview-dialog";
 
