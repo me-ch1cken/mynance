@@ -4,6 +4,12 @@ import { TimelineItem } from "./timeline-item";
 import { getAvailableYears, getTotalExpensesForSelectedYear } from "@/db/actions";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { YearOverviewDialog } from "../overview/year-overview-dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { Button } from "../ui/button";
+import { LogOut } from "lucide-react";
+import { auth } from "@/lib/auth";
+import { authClient } from "@/lib/auth-client";
+import { redirect } from "next/navigation";
 
 interface TrackedMonth {
     id: string;
@@ -20,17 +26,23 @@ interface Transaction {
     categoryName: string;
 }
 
+interface User {
+    id: string;
+    name: string;
+}
+
 interface TimelineProps {
     months: string[];
     trackedMonths: TrackedMonth[];
     selectedMonth: string;
     transactions: Transaction[];
     selectedYear: number;
+    user: User;
     setSelectedYear: (year: number) => void;
     setSelectedMonth: (month: string) => void;
 }
 
-export function Timeline({months, trackedMonths, selectedMonth, transactions, selectedYear, setSelectedYear, setSelectedMonth}: TimelineProps) {
+export function Timeline({months, trackedMonths, selectedMonth, transactions, selectedYear, user, setSelectedYear, setSelectedMonth}: TimelineProps) {
 
     const [yearTotal, setYearTotal] = useState<number>(0);
     const [availableYears, setAvailableYears] = useState<number[]>([]);
@@ -80,6 +92,20 @@ export function Timeline({months, trackedMonths, selectedMonth, transactions, se
                     })
                 }
             </ul>
+            <div className="mx-8 mt-16">
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant='outline'>{user.name}</Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-40" align='start'>
+                        <Button variant='ghost' className='text-red-500 w-full justify-start' onClick={async () => {
+                            await authClient.signOut();
+                            redirect('/login');
+                        }}><LogOut /> Meld af</Button>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
+
         </>
     )
 }

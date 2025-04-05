@@ -21,6 +21,6 @@ export default async function TransactionsPage() {
     }
 
     return (
-        <TransactionsPageComponent months={months} trackedMonths={trackedMonths} />
+        <TransactionsPageComponent months={months} trackedMonths={trackedMonths} userId={session.user.id} />
     );
 }

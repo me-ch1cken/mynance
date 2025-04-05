@@ -35,12 +35,13 @@ export default async function LoginPage() {
                             </a>
                         </div>
                     </div>
-                    <form className="flex flex-col gap-6">
+                    <form className="flex flex-col gap-6" action={login}>
                         <div className="grid gap-2">
                             <Label htmlFor="email">Email</Label>
                             <Input
                                 id="email"
                                 type="email"
+                                name="email"
                                 placeholder="you@example.com"
                                 required
                             />
@@ -50,11 +51,12 @@ export default async function LoginPage() {
                             <Input
                                 id="password"
                                 type="password"
+                                name="password"
                                 placeholder="•••••••••••"
                                 required
                             />
                         </div>
-                        <Button type="submit" onClick={login} className="w-full bg-emerald-500 hover:bg-emerald-600">
+                        <Button type="submit" className="w-full bg-emerald-500 hover:bg-emerald-600">
                             Sign in
                         </Button>
                     </form>

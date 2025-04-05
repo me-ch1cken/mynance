@@ -2,7 +2,7 @@
 
 import { db } from './index';
 import { eq, and, desc, sql } from 'drizzle-orm';
-import { categoriesTable, trackedMonthsTable, transactionsTable } from "./schema";
+import { categoriesTable, trackedMonthsTable, transactionsTable, user } from "./schema";
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 
@@ -190,25 +190,41 @@ export async function getTotalSavingsUntillThisYear(year: number) {
     return total[0].total;
 }
 
-export async function register() {
+export async function register(formData: FormData) {
+
+    const name = formData.get('name');
+    const email = formData.get('email');
+    const password = formData.get('password');
+
+    console.log(name, email, password);
+
     await auth.api.signUpEmail({
         body: {
-            email: 'robbe.decroo@mail.com',
-            password: 'test1234',
-            name: 'Robbe Decroo'
+            email: email as string,
+            password: password as string,
+            name: name as string
         }
     });
     
     redirect('/transactions');
 }
 
-export async function login() {
+export async function login(formData: FormData) {
+
+    const email = formData.get('email');
+    const password = formData.get('password');
+
     await auth.api.signInEmail({
         body: {
-            email: 'robbe.decroo@mail.com',
-            password: 'test1234'
+            email: email as string,
+            password: password as string
         }
     });
 
     redirect('/transactions');
+}
+
+export async function getUserById(userId: string) {
+    const [userFromDB] = await db.select().from(user).where(eq(user.id, userId)).limit(1).execute();
+    return userFromDB;
 }
