@@ -37,7 +37,7 @@ export function TransactionsPageComponent({months, trackedMonths, userId}: Trans
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [selectedMonth, setSelectedMonth] = useState(months[date.getMonth()]);
     const [selectedYear, setSelectedYear] = useState(date.getFullYear());
-    const [user, setUser] = useState<User>({id: '', name: ''});
+    const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
         setSelectedMonth(months[date.getMonth()]);
@@ -51,13 +51,17 @@ export function TransactionsPageComponent({months, trackedMonths, userId}: Trans
         getUser();
     }, [userId]);
 
+    if (!user) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <div className="flex">
             <div className="w-1/5 p-4">
                 <Timeline months={months} trackedMonths={trackedMonths} selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} transactions={transactions} selectedYear={selectedYear} setSelectedYear={setSelectedYear} user={user} />
             </div>
             <div className="w-4/5 p-4">
-                <Transactions selectedMonth={selectedMonth} selectedYear={selectedYear} months={months} transactions={transactions} setTransactions={setTransactions}/>
+                <Transactions selectedMonth={selectedMonth} selectedYear={selectedYear} months={months} transactions={transactions} setTransactions={setTransactions} user={user}/>
             </div>
         </div>
     );

@@ -8,6 +8,7 @@ import { getIncomeAndExpensesPerMonth, getTotalSavingsUntillThisYear } from "@/d
 interface LinearChartProps {
     transactions: Transaction[];
     selectedYear: number;
+    user: User;
 }
 
 interface Transaction {
@@ -18,6 +19,11 @@ interface Transaction {
     categoryName: string;
 }
 
+interface User {
+    id: string;
+    name: string;
+}
+
 interface ChartData {
     month: string;
     positive: number;
@@ -25,7 +31,7 @@ interface ChartData {
     totalSavings: number;
 }
 
-export function LinearChartComponent({ transactions, selectedYear }: LinearChartProps) {
+export function LinearChartComponent({ transactions, selectedYear, user}: LinearChartProps) {
 
     const [chartData, setChartData] = useState<ChartData[]>([]);
 
@@ -46,8 +52,8 @@ export function LinearChartComponent({ transactions, selectedYear }: LinearChart
 
     useEffect(() => {
         async function getChartData() {
-            const chartData = await getIncomeAndExpensesPerMonth(selectedYear);
-            const initialSavings = await getTotalSavingsUntillThisYear(selectedYear);
+            const chartData = await getIncomeAndExpensesPerMonth(selectedYear, user.id);
+            const initialSavings = await getTotalSavingsUntillThisYear(selectedYear, user.id);
     
             let runningTotal = +initialSavings; // Start vanaf eerder gespaard bedrag
     

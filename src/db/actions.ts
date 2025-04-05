@@ -6,24 +6,35 @@ import { categoriesTable, trackedMonthsTable, transactionsTable, user } from "./
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 
-export async function getMonthsForSelectedYear(year: number) {
-    const months = await db.select().from(trackedMonthsTable).where(eq(trackedMonthsTable.year, year)).execute();
+export async function getMonthsForSelectedYear(year: number, userId: string) {
+    const months = await db.select().from(trackedMonthsTable)
+        .where(and(
+            eq(trackedMonthsTable.year, year),
+            eq(trackedMonthsTable.userId, userId)
+        )).execute();
     return months ?? null;
 }
 
-export async function getAvailableYears() {
-    const years = (await db.selectDistinct({year: trackedMonthsTable.year}).from(trackedMonthsTable).execute()).map(y => y.year);
+export async function getAvailableYears(userId: string) {
+    const years = (await db.selectDistinct({year: trackedMonthsTable.year})
+        .from(trackedMonthsTable)
+        .where(eq(trackedMonthsTable.userId, userId))
+        .execute()).map(y => y.year);
     return years ?? null;
 }
 
-export async function getTotalExpensesForSelectedYear(year: number) {
+export async function getTotalExpensesForSelectedYear(year: number, userId: string) {
     let total: number = 0;
 
     const [totalPositive, totalNegative] = await Promise.all([
         db
             .select({ amount: transactionsTable.amount })
             .from(trackedMonthsTable)
-            .where(and(eq(trackedMonthsTable.year, year), eq(transactionsTable.transactionType, 'POSITIVE')))
+            .where(and(
+                eq(trackedMonthsTable.year, year),
+                eq(transactionsTable.transactionType, 'POSITIVE'),
+                eq(trackedMonthsTable.userId, userId)
+            ))
             .innerJoin(transactionsTable, eq(transactionsTable.trackedMonthId, trackedMonthsTable.id))
             .execute()
             .then(res => res.map(tx => ({ ...tx, amount: Number(tx.amount) }))),
@@ -31,36 +42,44 @@ export async function getTotalExpensesForSelectedYear(year: number) {
         db
             .select({ amount: transactionsTable.amount })
             .from(trackedMonthsTable)
-            .where(and(eq(trackedMonthsTable.year, year), eq(transactionsTable.transactionType, 'NEGATIVE')))
+            .where(and(
+                eq(trackedMonthsTable.year, year),
+                eq(transactionsTable.transactionType, 'NEGATIVE'),
+                eq(trackedMonthsTable.userId, userId)
+            ))
             .innerJoin(transactionsTable, eq(transactionsTable.trackedMonthId, trackedMonthsTable.id))
             .execute()
             .then(res => res.map(tx => ({ ...tx, amount: Number(tx.amount) }))),
     ]);
     
-
     total = totalPositive.reduce((sum, tx) => sum + tx.amount, 0);
     total -= totalNegative.reduce((sum, tx) => sum += tx.amount, 0);
 
     return total;
 }
 
-export async function createMonth(month: string, year: number) {
+export async function createMonth(month: string, year: number, userId: string) {
     const [monthFromDB] = await db.insert(trackedMonthsTable).values({
         year: year,
         month: month,
+        userId: userId
     }).returning({id: trackedMonthsTable.id});
     return monthFromDB?.id;
 }
 
-export async function getTransactionsForSelectedMonthAndYear(month: string, year: number) {
+export async function getTransactionsForSelectedMonthAndYear(month: string, year: number, userId: string) {
     const trackedMonthIDs = await db
         .select({ id: trackedMonthsTable.id })
         .from(trackedMonthsTable)
-        .where(and(eq(trackedMonthsTable.month, month), eq(trackedMonthsTable.year, year)))
+        .where(and(
+            eq(trackedMonthsTable.month, month),
+            eq(trackedMonthsTable.year, year),
+            eq(trackedMonthsTable.userId, userId)
+        ))
         .limit(1)
         .execute();
 
-    const id = trackedMonthIDs.length > 0 ? trackedMonthIDs[0].id : (await createMonth(month, year));
+    const id = trackedMonthIDs.length > 0 ? trackedMonthIDs[0].id : (await createMonth(month, year, userId));
 
     const transactions = (await db
         .select({
@@ -72,7 +91,10 @@ export async function getTransactionsForSelectedMonthAndYear(month: string, year
         })
         .from(transactionsTable)
         .innerJoin(categoriesTable, eq(transactionsTable.category, categoriesTable.id))
-        .where(eq(transactionsTable.trackedMonthId, id))
+        .where(and(
+            eq(transactionsTable.trackedMonthId, id),
+            eq(transactionsTable.userId, userId)
+        ))
         .orderBy(desc(transactionsTable.transactionType))
     ).map(tx => ({ ...tx, amount: Number(tx.amount) }));
 
@@ -86,7 +108,7 @@ export async function getTransactionsForSelectedMonthAndYear(month: string, year
     return sortedTransactions;
 }
 
-export async function getTransactionById(transactionId: string) {
+export async function getTransactionById(transactionId: string, userId: string) {
     const [transaction] = (await db
         .select({
             id: transactionsTable.id,
@@ -97,51 +119,67 @@ export async function getTransactionById(transactionId: string) {
         })
         .from(transactionsTable)
         .innerJoin(categoriesTable, eq(transactionsTable.category, categoriesTable.id))
-        .where(eq(transactionsTable.id, transactionId))
+        .where(and(
+            eq(transactionsTable.id, transactionId),
+            eq(transactionsTable.userId, userId)
+        ))
         .limit(1)
         .execute()).map(tx => ({ ...tx, amount: Number(tx.amount) }));
 
     return transaction;
 }
 
-export async function addTransaction(month: string, year: number, category: string, type: string, amount: number) {
+export async function addTransaction(month: string, year: number, category: string, type: string, amount: number, userId: string) {
     const trackedMonthIDs = await db
         .select({ id: trackedMonthsTable.id })
         .from(trackedMonthsTable)
-        .where(and(eq(trackedMonthsTable.month, month), eq(trackedMonthsTable.year, year)))
+        .where(and(
+            eq(trackedMonthsTable.month, month),
+            eq(trackedMonthsTable.year, year),
+            eq(trackedMonthsTable.userId, userId)
+        ))
         .limit(1)
         .execute();
 
-    const id = trackedMonthIDs.length > 0 ? trackedMonthIDs[0].id : (await createMonth(month, year));
+    const id = trackedMonthIDs.length > 0 ? trackedMonthIDs[0].id : (await createMonth(month, year, userId));
 
     const insertedTransactionId = await db.insert(transactionsTable).values({
         trackedMonthId: id,
         transactionType: type,
         category: category,
         amount: amount.toString(),
+        userId: userId
     }).returning({
         id: transactionsTable.id
     });
 
-    return getTransactionById(insertedTransactionId[0].id);
-
+    return getTransactionById(insertedTransactionId[0].id, userId);
 }
 
 export async function deleteTransaction(id: string) {
-    await db.delete(transactionsTable).where(eq(transactionsTable.id, id));
+    await db.delete(transactionsTable)
+        .where(and(
+            eq(transactionsTable.id, id)
+        ));
 }
 
-export async function getCategories() {
-    return await db.select().from(categoriesTable);
+export async function getCategories(userId: string) {
+    return await db.select()
+        .from(categoriesTable)
+        .where(eq(categoriesTable.userId, userId));
 }
 
-export async function createCategory(name: string) {
-    const [category] = await db.insert(categoriesTable).values({name: name}).returning({id: categoriesTable.id, name: categoriesTable.name});
+export async function createCategory(name: string, userId: string) {
+    const [category] = await db.insert(categoriesTable)
+        .values({
+            name: name,
+            userId: userId
+        })
+        .returning({id: categoriesTable.id, name: categoriesTable.name});
     return category;
 }
 
-export async function getIncomeAndExpensesPerMonth(year: number) {
-
+export async function getIncomeAndExpensesPerMonth(year: number, userId: string) {
     const monthOrder = sql`
         CASE 
             WHEN ${trackedMonthsTable.month} = 'Januari' THEN 1
@@ -168,14 +206,17 @@ export async function getIncomeAndExpensesPerMonth(year: number) {
         })
         .from(trackedMonthsTable)
         .leftJoin(transactionsTable, eq(transactionsTable.trackedMonthId, trackedMonthsTable.id))
-        .where(eq(trackedMonthsTable.year, year))
+        .where(and(
+            eq(trackedMonthsTable.year, year),
+            eq(trackedMonthsTable.userId, userId)
+        ))
         .groupBy(trackedMonthsTable.year, trackedMonthsTable.month)
         .orderBy(trackedMonthsTable.year, monthOrder);
 
     return results;
 }
 
-export async function getTotalSavingsUntillThisYear(year: number) {
+export async function getTotalSavingsUntillThisYear(year: number, userId: string) {
     const total = await db
         .select({
             total: sql<number>`
@@ -185,7 +226,10 @@ export async function getTotalSavingsUntillThisYear(year: number) {
         })
         .from(transactionsTable)
         .leftJoin(trackedMonthsTable, eq(transactionsTable.trackedMonthId, trackedMonthsTable.id))
-        .where(sql`${trackedMonthsTable.year} < ${year}`);
+        .where(and(
+            sql`${trackedMonthsTable.year} < ${year}`,
+            eq(transactionsTable.userId, userId)
+        ));
 
     return total[0].total;
 }

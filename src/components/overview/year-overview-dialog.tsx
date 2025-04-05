@@ -16,9 +16,15 @@ interface Transaction {
 interface OverviewDialogProps {
     transactions: Transaction[];
     selectedYear: number;
+    user: User;
 }
 
-export function YearOverviewDialog({ transactions, selectedYear }: OverviewDialogProps) {
+interface User {
+    id: string;
+    name: string;
+}
+
+export function YearOverviewDialog({ transactions, selectedYear, user }: OverviewDialogProps) {
 
     return (
         <Dialog>
@@ -32,7 +38,7 @@ export function YearOverviewDialog({ transactions, selectedYear }: OverviewDialo
                         Krijg een duidelijker beeld van je uitgaven.
                     </DialogDescription>
                 </DialogHeader>
-                <LinearChartComponent transactions={transactions} selectedYear={selectedYear} />
+                <LinearChartComponent transactions={transactions} selectedYear={selectedYear} user={user} />
                 <DialogFooter>
                     <DialogClose asChild><Button type="submit" variant={'ghost'}>Sluit venster</Button></DialogClose>
                 </DialogFooter>

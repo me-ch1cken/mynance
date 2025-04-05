@@ -1,10 +1,11 @@
-import { decimal, integer, pgTable, uuid, varchar, foreignKey, boolean, text, timestamp } from "drizzle-orm/pg-core";
+import { decimal, integer, pgTable, uuid, varchar, boolean, text, timestamp } from "drizzle-orm/pg-core";
 
 export const trackedMonthsTable = pgTable('tracked_months', {
     id: uuid('id').primaryKey().defaultRandom(),
     year: integer('year').notNull(),
     month: varchar('month', { length: 9 }).notNull(),
-    completed: boolean('is_completed').notNull().default(false)
+    completed: boolean('is_completed').notNull().default(false),
+    userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' })
 });
 
 export const transactionsTable = pgTable('transactions', {
@@ -12,12 +13,14 @@ export const transactionsTable = pgTable('transactions', {
     trackedMonthId: uuid('tracked_month_id').notNull().references(() => trackedMonthsTable.id),
     transactionType: varchar('transaction_type', { length: 8 }).notNull(),
     category: uuid('category_id').notNull().references(() => categoriesTable.id),
-    amount: decimal('amount', { scale: 2 }).notNull()
+    amount: decimal('amount', { scale: 2 }).notNull(),
+    userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' })
 });
 
 export const categoriesTable = pgTable('categories', {
     id: uuid('id').primaryKey().defaultRandom(),
-    name: varchar().notNull()
+    name: varchar().notNull(),
+    userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' })
 });
 
 // Better auth schema

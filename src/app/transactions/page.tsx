@@ -15,9 +15,9 @@ export default async function TransactionsPage() {
     const months: string[] = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
     const date = new Date();
 
-    const trackedMonths = await getMonthsForSelectedYear(date.getFullYear());
+    const trackedMonths = await getMonthsForSelectedYear(date.getFullYear(), session.user.id);
     if (trackedMonths.length === 0) {
-        await createMonth(months[date.getMonth()], date.getFullYear());
+        await createMonth(months[date.getMonth()], date.getFullYear(), session.user.id);
     }
 
     return (

@@ -7,7 +7,6 @@ import { YearOverviewDialog } from "../overview/year-overview-dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { LogOut } from "lucide-react";
-import { auth } from "@/lib/auth";
 import { authClient } from "@/lib/auth-client";
 import { redirect } from "next/navigation";
 
@@ -50,7 +49,7 @@ export function Timeline({months, trackedMonths, selectedMonth, transactions, se
 
     useEffect(() => {
         async function getYearTotalData() {
-            const total: number = await getTotalExpensesForSelectedYear(selectedYear);
+            const total: number = await getTotalExpensesForSelectedYear(selectedYear, user.id);
             setYearTotal(total);
         }
         getYearTotalData();
@@ -58,7 +57,7 @@ export function Timeline({months, trackedMonths, selectedMonth, transactions, se
 
     useEffect(() => {
         async function getAvailableYearsData() {
-            const availableYears = await getAvailableYears();
+            const availableYears = await getAvailableYears(user.id);
             setAvailableYears(availableYears);
         }
 
@@ -67,7 +66,7 @@ export function Timeline({months, trackedMonths, selectedMonth, transactions, se
 
     return (
         <>
-            <YearOverviewDialog transactions={transactions} selectedYear={selectedYear} />
+            <YearOverviewDialog transactions={transactions} selectedYear={selectedYear} user={user} />
             <Select value={selectedYear.toString()} onValueChange={(value) => setSelectedYear(Number(value))}>
                 <SelectTrigger className="mx-8 font-bold text-lg">
                     <SelectValue placeholder="Inkomst" />

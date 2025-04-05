@@ -12,7 +12,13 @@ interface TransactionsProps {
     selectedYear: number;
     months: string[];
     transactions: Transaction[];
+    user: User;
     setTransactions: (transactions: Transaction[]) => void;
+}
+
+interface User {
+    id: string;
+    name: string;
 }
 
 interface Transaction {
@@ -28,7 +34,7 @@ interface Category {
     name: string;
 }
 
-export function Transactions({ selectedMonth, selectedYear, months, transactions, setTransactions }: TransactionsProps) {
+export function Transactions({ selectedMonth, selectedYear, months, transactions, user, setTransactions }: TransactionsProps) {
     
     const [categories, setCategories] = useState<Category[]>([]);
 
@@ -62,7 +68,7 @@ export function Transactions({ selectedMonth, selectedYear, months, transactions
 
     useEffect(() => {
         async function fetchData() {
-            const transactions: Transaction[] = await getTransactionsForSelectedMonthAndYear(selectedMonth, selectedYear);
+            const transactions: Transaction[] = await getTransactionsForSelectedMonthAndYear(selectedMonth, selectedYear, user.id);
             setTransactions(transactions);
             setSelectedCategory('ALL');
             setSelectedTransactionType('ALL');
@@ -80,7 +86,7 @@ export function Transactions({ selectedMonth, selectedYear, months, transactions
 
     useEffect(() => {
         async function fetchData() {
-            const categories: Category[] = await getCategories();
+            const categories: Category[] = await getCategories(user.id);
             setCategories(categories);
         }
 
@@ -115,7 +121,7 @@ export function Transactions({ selectedMonth, selectedYear, months, transactions
                     </Select>
                 </li>
                 <li>
-                    { date.getMonth() === months.indexOf(selectedMonth) && date.getFullYear() === selectedYear ? <AddTransactionDialog categories={categories} selectedMonth={selectedMonth} selectedYear={selectedYear} addTransactionToList={addTransaction} addCategoryToList={addCategory} /> : null }
+                    { date.getMonth() === months.indexOf(selectedMonth) && date.getFullYear() === selectedYear ? <AddTransactionDialog categories={categories} selectedMonth={selectedMonth} selectedYear={selectedYear} addTransactionToList={addTransaction} addCategoryToList={addCategory} user={user} /> : null }
                 </li>
                 <li className="ml-auto me-16">
                     <ShowOverviewDialog transactions={filteredTransactions} selectedMonth={selectedMonth} />

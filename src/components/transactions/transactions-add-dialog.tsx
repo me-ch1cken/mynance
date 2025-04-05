@@ -21,15 +21,21 @@ interface Transaction {
     categoryName: string;
 }
 
+interface User {
+    id: string;
+    name: string;
+}
+
 interface AddTransactionDialogProps {
     categories: Category[];
     selectedMonth: string;
     selectedYear: number;
+    user: User;
     addTransactionToList: (transaction: Transaction) => void;
     addCategoryToList: (category: Category) => void
 }
 
-export function AddTransactionDialog({categories, selectedMonth, selectedYear, addTransactionToList, addCategoryToList}: AddTransactionDialogProps) {
+export function AddTransactionDialog({categories, selectedMonth, selectedYear, user, addTransactionToList, addCategoryToList}: AddTransactionDialogProps) {
 
     const [selectedCategory, setSelectedCategory] = useState<string>('');
     const [selectedType, setSelectedType] = useState<string>('NEGATIVE');
@@ -38,7 +44,7 @@ export function AddTransactionDialog({categories, selectedMonth, selectedYear, a
     const [newCategory, setNewCategory] = useState<string>('');
 
     const handleCreateCategory = async (name: string) => {
-        const category = await createCategory(name);
+        const category = await createCategory(name, user.id);
         addCategoryToList(category);
         setNewCategory('');
     }
@@ -61,7 +67,7 @@ export function AddTransactionDialog({categories, selectedMonth, selectedYear, a
                 </DialogHeader>
                 <form onSubmit={async (e) => {
                     e.preventDefault();
-                    const addedTransaction = await addTransaction(selectedMonth, selectedYear, selectedCategory, selectedType, amount);
+                    const addedTransaction = await addTransaction(selectedMonth, selectedYear, selectedCategory, selectedType, amount, user.id);
                     addTransactionToList(addedTransaction);
                 }} className="flex flex-col space-y-4">
                     <Select value={selectedCategory} onValueChange={setSelectedCategory}>
