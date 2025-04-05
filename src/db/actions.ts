@@ -236,19 +236,25 @@ export async function getTotalSavingsUntillThisYear(year: number, userId: string
 
 export async function register(formData: FormData) {
 
+    const months = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
+    const date = new Date();
+    const index = date.getMonth();
+
     const name = formData.get('name');
     const email = formData.get('email');
     const password = formData.get('password');
 
-    console.log(name, email, password);
-
-    await auth.api.signUpEmail({
+    const userId = await auth.api.signUpEmail({
         body: {
             email: email as string,
             password: password as string,
             name: name as string
         }
-    });
+    }).then(res => res.user.id);
+
+    for(let i = 0; i < index; i++) {
+        await createMonth(months[i], date.getFullYear(), userId);
+    }
     
     redirect('/transactions');
 }
